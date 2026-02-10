@@ -1,4 +1,5 @@
 import { corsOptions } from '../../configs/cors-configuration.js';
+import { generateAccountNumber } from '../../src/helpers/account-number.js'
 import User from './user.model.js';
 
 //Crear Usuario(ADMIN)
@@ -6,6 +7,8 @@ export const createUser = async(req, res)=>{
     try {
         const userData = req.body;
 
+        userData.accountNumber = generateAccountNumber();
+        
         const user = new User(userData);
         await user.save();
 
