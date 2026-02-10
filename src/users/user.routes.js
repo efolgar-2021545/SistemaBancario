@@ -12,3 +12,5 @@ router.get(
     '/getUsers',
     getUsers
 )
+
+export default router;

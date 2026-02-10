@@ -7,6 +7,9 @@ import morgan from 'morgan';
 
 const BASE_PATH = '/kinalBank/v1';
 
+//Se importaran todos los routes de las entidades
+import userRoutes from '../src/users/user.routes.js';
+
 export const initApp = () => {
   const app = express();
 
@@ -14,6 +17,8 @@ export const initApp = () => {
   app.use(cors());
   app.use(helmet());
   app.use(morgan('dev'));
+
+  app.use(BASE_PATH, userRoutes);
 
   // Endpoint de prueba
   app.get(`${BASE_PATH}/health`, (req, res) => {
