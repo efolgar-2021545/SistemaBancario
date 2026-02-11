@@ -82,16 +82,11 @@ const userSchema = new mongoose.Schema(
 //Antes de guardar un usuario se ejecuta esta funcion
 //Si la contra no fue modificada, entonces no se encripta otra vez
 // Esta funcion reemplaza la contrasena original y la encripta por medio de bycrypt
-userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
-    
-    try {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        next();
-    } catch (error) {
-        next(error);
-    }
+userSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
+
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 export default mongoose.model('User', userSchema);
