@@ -1,6 +1,7 @@
 'use strict';
 
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema(
     {
@@ -77,5 +78,20 @@ const userSchema = new mongoose.Schema(
         versionKey: false
     }
 );
+
+//Antes de guardar un usuario se ejecuta esta funcion
+//Si la contra no fue modificada, entonces no se encripta otra vez
+// Esta funcion reemplaza la contrasena original y la encripta por medio de bycrypt
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 export default mongoose.model('User', userSchema);
