@@ -17,6 +17,7 @@ export const validateAdmin =(req,res,next)=>{
                 message: 'Acceso denegado, solo se permite el rol de ADMIN'
             })
         }
+        next();
 
     } catch (error) {
         res.status(400).json({

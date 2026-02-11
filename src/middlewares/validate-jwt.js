@@ -4,9 +4,9 @@ import User from '../users/user.model.js';
 
 export const validateJWT = async(req,res,next)=>{
     try {
-        const tokenHeader = req.header('Authorization');
+        const authHeader = req.header('Authorization');
 
-        if(!token){
+        if(!authHeader){
             return res.status(401).json({
                 success: false,
                 message: 'No hay un token en la petición'
