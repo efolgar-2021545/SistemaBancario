@@ -51,8 +51,7 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: [true, 'La contraseña es obligatoria'],
-            unique: true,
+            required: [true, 'La contraseña es obligatoria']
         },
         jobName: {
             type: String,
