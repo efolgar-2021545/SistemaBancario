@@ -33,7 +33,7 @@ export const login = async (req, res) => {
                 username: user.username,
                 role: user.role
             },
-            process.env.SECRET_KEY,
+            process.env.JWT_SECRET,
             { expiresIn: '2h' }
         );
 

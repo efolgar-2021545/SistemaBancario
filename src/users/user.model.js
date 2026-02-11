@@ -63,10 +63,14 @@ const userSchema = new mongoose.Schema(
             required: true,
             min: [100, 'Debes tener mínimo Q100.00 para crear tu cuenta'],
         },
+        balance: {
+            type: Number,
+            default: 0
+        },
         role: {
             type: String,
-            required: [true, 'El rol es obligatorio'],
             enum: ['ADMIN', 'CLIENTE'],
+            default: 'CLIENTE'
         },
         isActive: {
             type: Boolean,

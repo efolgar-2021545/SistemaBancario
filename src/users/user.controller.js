@@ -3,20 +3,43 @@ import { generateAccountNumber } from '../../src/helpers/account-number.js'
 import User from './user.model.js';
 
 //Crear Usuario(ADMIN)
-export const createUser = async(req, res)=>{
+export const createUser = async (req, res) => {
     try {
-        const userData = req.body;
+        const {
+            name,
+            username,
+            password,
+            dpi,
+            direction,
+            phone,
+            email,
+            jobName,
+            monthlyIncome
+        } = req.body;
 
-        userData.accountNumber = generateAccountNumber();
-        
-        const user = new User(userData);
+        //se crea el usuario con role = CLIENTE
+        const user = new User({
+            name,
+            username,
+            password,
+            dpi,
+            direction,
+            phone,
+            email,
+            jobName,
+            monthlyIncome,
+            accountNumber: generateAccountNumber(),
+            role: 'CLIENTE' 
+        });
+
         await user.save();
 
         res.status(201).json({
             success: true,
             message: 'Usuario creado exitosamente',
-            data:user
-        })
+            data: user
+        });
+
     } catch (error) {
         res.status(400).json({
             success: false,
@@ -24,7 +47,8 @@ export const createUser = async(req, res)=>{
             error: error.message
         });
     }
-}
+};
+
 
 //Ver Usuarios(ADMIN)
 export const getUsers = async(req,res)=>{
