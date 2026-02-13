@@ -72,6 +72,10 @@ const userSchema = new mongoose.Schema(
             enum: ['ADMIN', 'CLIENTE'],
             default: 'CLIENTE'
         },
+        image: {
+            type: String,
+            default: null
+        },
         isActive: {
             type: Boolean,
             default: true
