@@ -12,6 +12,7 @@ import userRoutes from '../src/users/user.routes.js';
 import authRoutes from '../src/auth/auth.routes.js';
 import transactionRoutes from '../src/transactions/transaction.routes.js';
 import accountRoutes from '../src/accounts/account.routes.js';
+import depositRoutes from '../src/deposits/deposit.routes.js';
 
 
 export const initApp = () => {
@@ -25,7 +26,8 @@ export const initApp = () => {
   app.use(BASE_PATH, userRoutes);
   app.use(BASE_PATH, authRoutes);
   app.use(`${BASE_PATH}/transactions`, transactionRoutes);
-  app.use(${BASE_PATH}/accounts, accountRoutes);
+  app.use(`${BASE_PATH}/accounts`, accountRoutes);
+  app.use(`${BASE_PATH}/deposits`, depositRoutes);
 
   // Endpoint de prueba
   app.get(`${BASE_PATH}/health`, (req, res) => {
