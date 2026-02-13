@@ -11,6 +11,7 @@ const BASE_PATH = '/kinalBank/v1';
 import userRoutes from '../src/users/user.routes.js';
 import authRoutes from '../src/auth/auth.routes.js';
 import transactionRoutes from '../src/transactions/transaction.routes.js';
+import accountRoutes from '../src/accounts/account.routes.js';
 
 
 export const initApp = () => {
@@ -24,6 +25,7 @@ export const initApp = () => {
   app.use(BASE_PATH, userRoutes);
   app.use(BASE_PATH, authRoutes);
   app.use(`${BASE_PATH}/transactions`, transactionRoutes);
+  app.use(${BASE_PATH}/accounts, accountRoutes);
 
   // Endpoint de prueba
   app.get(`${BASE_PATH}/health`, (req, res) => {
