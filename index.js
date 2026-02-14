@@ -26,7 +26,8 @@ const createAdmin = async () => {
         password: 'ADMINB',
         jobName: 'Administrador General',
         monthlyIncome: 1000,
-        role: 'ADMIN'
+        role: 'ADMIN',
+        image: 'https://res.cloudinary.com/dadsac1uk/image/upload/v1771022530/adminBanco_y3ooaw.png'
       });
 
       console.log('ADMIN creado automáticamente');

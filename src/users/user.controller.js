@@ -5,33 +5,17 @@ import User from './user.model.js';
 //Crear Usuario(ADMIN)
 export const createUser = async (req, res) => {
     try {
-        const {
-            name,
-            username,
-            password,
-            dpi,
-            direction,
-            phone,
-            email,
-            jobName,
-            monthlyIncome
-        } = req.body;
+        const userData = req.body;
 
-        //se crea el usuario con role = CLIENTE
-        const user = new User({
-            name,
-            username,
-            password,
-            dpi,
-            direction,
-            phone,
-            email,
-            jobName,
-            monthlyIncome,
-            accountNumber: generateAccountNumber(),
-            role: 'CLIENTE' 
-        });
+        // Imagen que el admin manda
+        if (req.file) {
+            userData.image = req.file.path;
+        }
 
+        userData.accountNumber = generateAccountNumber();
+        userData.role = 'CLIENTE';
+
+        const user = new User(userData);
         await user.save();
 
         res.status(201).json({
