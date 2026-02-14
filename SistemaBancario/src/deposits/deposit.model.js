@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+/*import mongoose from "mongoose";
 
 const depositSchema = new mongoose.Schema(
     {
@@ -37,3 +37,4 @@ const depositSchema = new mongoose.Schema(
 );
 
 export default mongoose.model('Deposit', depositSchema);
+*/

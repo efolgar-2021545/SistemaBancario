@@ -1,4 +1,4 @@
-import Deposit from "./deposit.model.js";
+/*import Deposit from "./deposit.model.js";
 
 export const createDeposit = async (req, res) => {
     try {
@@ -91,3 +91,4 @@ export const revertDeposit = async (req, res) => {
         });
     }
 };
+*/

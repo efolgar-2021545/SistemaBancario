@@ -1,5 +1,5 @@
 'use strict';
-
+import {generateAccountNumber} from '../helpers/account-number.js'
 import Account from './account.model.js';
 
 // Crear cuenta (ADMIN)
@@ -8,13 +8,14 @@ export const createAccount = async (req, res) => {
         const {
             accountType,
             currency,
-            user
+            ownerId
         } = req.body;
 
         const account = new Account({
+            accountNumber: generateAccountNumber(),
             accountType,
             currency,
-            user
+            ownerId
         });
 
         await account.save();
@@ -24,6 +25,7 @@ export const createAccount = async (req, res) => {
             message: 'Cuenta creada exitosamente',
             data: account
         });
+
     } catch (error) {
         res.status(400).json({
             success: false,
@@ -41,8 +43,7 @@ export const getAccounts = async (req, res) => {
         const accounts = await Account.find()
             .limit(limit * 1)
             .skip((page - 1) * limit)
-            .sort({ createdAt: -1 })
-            .populate('user', 'name username email');
+            .sort({ createdAt: -1 });
 
         const total = await Account.countDocuments();
 
