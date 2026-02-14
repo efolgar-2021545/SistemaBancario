@@ -27,17 +27,22 @@ export const User = sequelize.define(
       type: DataTypes.STRING(150),
       allowNull: false,
       unique: true,
+      maxlength:[100, 'El correo no puede exceder de 100 carácteres ']
     },
 
     Password: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      minlength:[8, 'La contraseña debe ser mayor a 8 caracteres']
     },
 
     DPI: {
       type: DataTypes.STRING(20),
       allowNull: false,
       unique: true,
+      minlength: [13, 'El DPI no puede tener menos de 13 dígitos'],
+      maxlength: [13, 'El DPI no puede tener mas de 13 dígitos'],
+      match: [/^\d{13}$/, 'El DPI solo debe contener números']
     },
 
     Address: {
@@ -48,6 +53,10 @@ export const User = sequelize.define(
     Phone: {
       type: DataTypes.STRING(20),
       allowNull: false,
+      unique:true,
+      minlength: [8, 'El número de teléfono no puede tener menos de 8 dígitos'],
+      maxlength: [8, 'El número de teléfono no puede tener mas de 8 dígitos'],
+      match: [/^\d{8}$/, 'El teléfono solo debe contener números'],
     },
 
     Job: {
