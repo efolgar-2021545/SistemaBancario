@@ -36,3 +36,14 @@ export const createTransaction = async (req, res) => {
         });
     }
 };
+
+export const getTransactions = async (req, res) => {
+    const transactions = await Transaction.find()
+        .populate('fromAccount', 'accountNumber balance')
+        .populate('toAccount', 'accountNumber');
+
+    res.json({
+        success: true,
+        data: transactions
+    });
+};
