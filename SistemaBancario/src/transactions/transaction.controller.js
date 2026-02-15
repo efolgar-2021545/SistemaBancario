@@ -19,7 +19,7 @@ export const createTransaction = async (req, res) => {
             fromAccount,
             toAccount: toAccount || null,
             description,
-            ownerId: req.user.uid // viene del JWT
+            ownerId: req.user.id // viene del JWT
         });
 
         await transaction.save();

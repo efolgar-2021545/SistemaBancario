@@ -8,13 +8,12 @@ const router = new Router();
 router.post(
     '/create',
     validateJWT,
-    validateAdmin,
     createTransaction
 );
 
+//las transacciones solo las puede ver el admin
 router.get(
     '/listar',
-    validateJWT,
     validateAdmin,
     getTransactions
 );
