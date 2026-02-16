@@ -8,6 +8,7 @@ export const createAccount = async (req, res) => {
         const {
             accountType,
             currency,
+            balance,
             ownerId
         } = req.body;
 
@@ -15,6 +16,7 @@ export const createAccount = async (req, res) => {
             accountNumber: generateAccountNumber(),
             accountType,
             currency,
+            balance,
             ownerId
         });
 
