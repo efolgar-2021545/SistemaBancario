@@ -30,7 +30,7 @@ router.put(
 router.get(
     '/:id', 
     validateJWT, 
-    validateAdmin, 
+    validateClient, 
     getDepositById
 );
 
