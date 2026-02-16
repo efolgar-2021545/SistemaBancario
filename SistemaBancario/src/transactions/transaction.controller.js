@@ -90,3 +90,59 @@ export const getTransactions = async (req, res) => {
         data: transactions
     });
 };
+
+// Buscar transacción por ID (ADMIN o Propietario)
+export const getTransactionById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const transaction = await Transaction.findById(id)
+            .populate('fromAccount')
+            .populate('toAccount');
+
+        if (!transaction) {
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
+        }
+
+        res.status(200).json({ success: true, data: transaction });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Actualizar transacción (ADMIN - Solo descripción)
+export const updateTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { description } = req.body;
+
+        const updatedTransaction = await Transaction.findByIdAndUpdate(
+            id, 
+            { description }, 
+            { new: true }
+        );
+
+        if (!updatedTransaction) {
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
+        }
+
+        res.status(200).json({ success: true, data: updatedTransaction });
+    } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Eliminar transacción (ADMIN)
+export const deleteTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const transaction = await Transaction.findByIdAndDelete(id);
+
+        if (!transaction) {
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
+        }
+
+        res.status(200).json({ success: true, message: 'Registro de transacción eliminado' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

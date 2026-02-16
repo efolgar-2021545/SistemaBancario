@@ -6,18 +6,18 @@ export const createDeposit = async (req, res) => {
         const { fromAccountId, accountId, amount } = req.body;
 
         if (!fromAccountId || !accountId || !amount) {
-        return res.status(400).json({
-            success: false,
-            message: 'Datos incompletos'
-        });
+            return res.status(400).json({
+                success: false,
+                message: 'Datos incompletos'
+            });
         }
 
         const amountNumber = Number(amount);
         if (isNaN(amountNumber) || amountNumber <= 0) {
-        return res.status(400).json({
-            success: false,
-            message: 'Monto inválido'
-        });
+            return res.status(400).json({
+                success: false,
+                message: 'Monto inválido'
+            });
         }
 
         // Buscar cuenta de la persona que va a depositar
@@ -26,24 +26,24 @@ export const createDeposit = async (req, res) => {
         const toAccount = await Account.findById(accountId);
 
         if (!fromAccount) {
-        return res.status(404).json({
-            success: false,
-            message: 'Cuenta que envía el depósito no encontrada'
-        });
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta que envía el depósito no encontrada'
+            });
         }
         if (!toAccount) {
-        return res.status(404).json({
-            success: false,
-            message: 'Cuenta que recibe el depósito no encontrada'
-        });
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta que recibe el depósito no encontrada'
+            });
         }
 
         // Validar saldo suficiente
         if (fromAccount.balance < amountNumber) {
-        return res.status(400).json({
-            success: false,
-            message: 'Saldo insuficiente en la cuenta que envía el deposito'
-        });
+            return res.status(400).json({
+                success: false,
+                message: 'Saldo insuficiente en la cuenta que envía el deposito'
+            });
         }
 
         // Hacer la transferencia
@@ -55,26 +55,26 @@ export const createDeposit = async (req, res) => {
 
         // Guardar el depósito solo para la cuenta que recibe
         const deposit = new Deposit({
-        accountId: toAccount._id,
-        accountNumber: toAccount.accountNumber,
-        fromAccountId: fromAccount._id,
-        amount: amountNumber,
-        ownerId: req.user.id
+            accountId: toAccount._id,
+            accountNumber: toAccount.accountNumber,
+            fromAccountId: fromAccount._id,
+            amount: amountNumber,
+            ownerId: req.user.id
         });
 
         await deposit.save();
 
         return res.status(201).json({
-        success: true,
-        message: 'Depósito realizado',
-        deposit
+            success: true,
+            message: 'Depósito realizado',
+            deposit
         });
 
     } catch (err) {
         return res.status(500).json({
-        success: false,
-        message: 'Error al realizar el depósito',
-        error: err.message
+            success: false,
+            message: 'Error al realizar el depósito',
+            error: err.message
         });
     }
 };
@@ -130,9 +130,9 @@ export const revertDeposit = async (req, res) => {
         const fromAccount = await Account.findById(deposit.fromAccountId);
 
         if (!toAccount || !fromAccount) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Alguna de las cuentas no fue encontrada' 
+            return res.status(404).json({
+                success: false,
+                message: 'Alguna de las cuentas no fue encontrada'
             });
         }
 
@@ -157,5 +157,75 @@ export const revertDeposit = async (req, res) => {
             message: 'Error al revertir el deposito',
             error: err.message
         });
+    }
+};
+
+// Buscar depósito por ID (ADMIN)
+export const getDepositById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deposit = await Deposit.findById(id).populate('accountId');
+
+        if (!deposit) return res.status(404).json({ 
+            success: false, 
+            message: 'No encontrado' 
+        });
+
+        res.status(200).json({ 
+            success: true, 
+            data: deposit 
+        });
+
+    } catch (error) { 
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        }); 
+    }
+};
+
+export const updateDeposit = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado } = req.body;
+        const updated = await Deposit.findByIdAndUpdate(id, { estado }, { new: true });
+
+        if (!updated) return res.status(404).json({ 
+            success: false, 
+            message: 'No encontrado' 
+        });
+
+        res.status(200).json({ 
+            success: true, 
+            data: updated 
+        });
+
+    } catch (error) { 
+        res.status(400).json({ 
+            success: false, 
+            message: error.message 
+        }); 
+    }
+};
+
+export const deleteDeposit = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleted = await Deposit.findByIdAndDelete(id);
+
+        if (!deleted) return res.status(404).json({ 
+            success: false, 
+            message: 'No encontrado' });
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'Eliminado' 
+        });
+
+    } catch (error) { 
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        }); 
     }
 };

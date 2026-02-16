@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createDeposit, getDeposits, revertDeposit } from "./deposit.controller.js";
+import { createDeposit, getDeposits, revertDeposit, getDepositById, updateDeposit, deleteDeposit } from "./deposit.controller.js";
 import { validateJWT } from '../middlewares/validate-jwt.js';
 import { validateClient } from '../middlewares/validate-client.js';
 import { validateAdmin } from "../middlewares/validate-admin.js";
@@ -25,6 +25,27 @@ router.put(
     validateJWT, 
     validateClient,
     revertDeposit
+);
+
+router.get(
+    '/:id', 
+    validateJWT, 
+    validateAdmin, 
+    getDepositById
+);
+
+router.put(
+    '/update/:id', 
+    validateJWT, 
+    validateAdmin, 
+    updateDeposit
+);
+
+router.delete(
+    '/:id', 
+    validateJWT, 
+    validateAdmin, 
+    deleteDeposit
 );
 
 export default router;
