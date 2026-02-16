@@ -1,5 +1,7 @@
 import Transaction from './transaction.model.js';
 import Account from '../accounts/account.model.js';
+import { convertirMoneda } from "../services/divisas.service.js";
+
 
 export const createTransaction = async (req, res) => {
     try {
@@ -44,19 +46,36 @@ export const createTransaction = async (req, res) => {
             });
         }
 
+    
+    let finalAmount = amountNumber;
+
+        if (
+            destinationAccount &&
+            sourceAccount.currency !== destinationAccount.currency
+        ) {
+            const conversion = await convertirMoneda(
+                sourceAccount.currency,
+                destinationAccount.currency,
+                amountNumber
+            );
+
+            finalAmount = conversion.montoConvertido;
+        }
+
         // Realizar la transferencia
         sourceAccount.balance -= amountNumber;
+
         if (destinationAccount) {
-            destinationAccount.balance += amountNumber;
+            destinationAccount.balance += finalAmount;
+            await destinationAccount.save();
         }
 
         await sourceAccount.save();
-        if (destinationAccount) await destinationAccount.save();
 
         // Guardar transacción
         const transaction = new Transaction({
             type,
-            amount: amountNumber,
+            amount: finalAmount, 
             fromAccount: sourceAccount._id,
             toAccount: destinationAccount ? destinationAccount._id : null,
             description,

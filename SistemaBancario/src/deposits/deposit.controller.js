@@ -1,5 +1,6 @@
 import Deposit from "./deposit.model.js";
 import Account from '../accounts/account.model.js';
+import { convertirMoneda } from "../services/divisas-service.js";
 
 export const createDeposit = async (req, res) => {
     try {
@@ -46,9 +47,21 @@ export const createDeposit = async (req, res) => {
             });
         }
 
+        let finalAmount = amountNumber;
+
+        if (fromAccount.currency !== toAccount.currency) {
+            const conversion = await convertirMoneda(
+                fromAccount.currency,
+                toAccount.currency,
+                amountNumber
+            );
+
+            finalAmount = conversion.montoConvertido;
+        }
+
         // Hacer la transferencia
         fromAccount.balance -= amountNumber;// se le resta a la cuenta que va a depositar
-        toAccount.balance += amountNumber; // se le agrega el dinero a la cuenta que lo recibira
+        toAccount.balance += amountNumfinalAmountber; // se le agrega el dinero a la cuenta que lo recibira
 
         await fromAccount.save();
         await toAccount.save();
@@ -58,7 +71,7 @@ export const createDeposit = async (req, res) => {
             accountId: toAccount._id,
             accountNumber: toAccount.accountNumber,
             fromAccountId: fromAccount._id,
-            amount: amountNumber,
+            amount: finalAmount,
             ownerId: req.user.id
         });
 
