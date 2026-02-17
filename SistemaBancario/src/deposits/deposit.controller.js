@@ -6,6 +6,7 @@ export const createDeposit = async (req, res) => {
     try {
         const { fromAccountId, accountId, amount } = req.body;
 
+        // Validar campos
         if (!fromAccountId || !accountId || !amount) {
             return res.status(400).json({
                 success: false,
@@ -14,6 +15,7 @@ export const createDeposit = async (req, res) => {
         }
 
         const amountNumber = Number(amount);
+
         if (isNaN(amountNumber) || amountNumber <= 0) {
             return res.status(400).json({
                 success: false,
@@ -21,9 +23,7 @@ export const createDeposit = async (req, res) => {
             });
         }
 
-        // Buscar cuenta de la persona que va a depositar
         const fromAccount = await Account.findById(fromAccountId);
-        //Buscar la cuenta de la persona que recibe el deposito
         const toAccount = await Account.findById(accountId);
 
         if (!fromAccount) {
@@ -32,6 +32,7 @@ export const createDeposit = async (req, res) => {
                 message: 'Cuenta que envía el depósito no encontrada'
             });
         }
+
         if (!toAccount) {
             return res.status(404).json({
                 success: false,
@@ -43,10 +44,11 @@ export const createDeposit = async (req, res) => {
         if (fromAccount.balance < amountNumber) {
             return res.status(400).json({
                 success: false,
-                message: 'Saldo insuficiente en la cuenta que envía el deposito'
+                message: 'Saldo insuficiente en la cuenta que envía el depósito'
             });
         }
 
+        //Conversión de moneda si aplica
         let finalAmount = amountNumber;
 
         if (fromAccount.currency !== toAccount.currency) {
@@ -59,20 +61,18 @@ export const createDeposit = async (req, res) => {
             finalAmount = conversion.montoConvertido;
         }
 
-        // Hacer la transferencia
-        fromAccount.balance -= amountNumber;// se le resta a la cuenta que va a depositar
-        toAccount.balance += amountNumfinalAmountber; // se le agrega el dinero a la cuenta que lo recibira
+        fromAccount.balance -= amountNumber;
+        toAccount.balance += finalAmount;
 
         await fromAccount.save();
         await toAccount.save();
 
-        // Guardar el depósito solo para la cuenta que recibe
         const deposit = new Deposit({
             accountId: toAccount._id,
             accountNumber: toAccount.accountNumber,
             fromAccountId: fromAccount._id,
             amount: finalAmount,
-            ownerId: req.user.id
+            ownerId: fromAccount._id.toString() // usamos la cuenta como referencia
         });
 
         await deposit.save();

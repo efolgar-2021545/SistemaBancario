@@ -3,14 +3,57 @@ import {generateAccountNumber} from '../helpers/account-number.js'
 import Account from './account.model.js';
 
 // Crear cuenta (ADMIN)
+// Crear cuenta (ADMIN)
 export const createAccount = async (req, res) => {
     try {
-        const {
-            accountType,
-            currency,
-            balance,
-            ownerId
-        } = req.body;
+        const { accountType, currency, balance = 0, ownerId } = req.body;
+
+        // Validar campos obligatorios
+        if (!ownerId || !accountType || !currency) {
+            return res.status(400).json({
+                success: false,
+                message: 'ownerId, accountType y currency son obligatorios'
+            });
+        }
+
+        // Validar tipos permitidos
+        const validAccountTypes = ['AHORRO', 'MONETARIA', 'CREDITO'];
+        const validCurrencies = ['GTQ', 'USD', 'EUR'];
+
+        if (!validAccountTypes.includes(accountType)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Tipo de cuenta no válido'
+            });
+        }
+
+        if (!validCurrencies.includes(currency)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Moneda no válida'
+            });
+        }
+
+        // Validar saldo
+        if (balance < 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'El saldo no puede ser negativo'
+            });
+        }
+
+        //Un usuario no puede tener dos cuentas del mismo tipo
+        const existingAccount = await Account.findOne({
+            ownerId,
+            accountType
+        });
+
+        if (existingAccount) {
+            return res.status(409).json({
+                success: false,
+                message: `El usuario ya tiene una cuenta ${accountType}`
+            });
+        }
 
         const account = new Account({
             accountNumber: generateAccountNumber(),
@@ -91,19 +134,54 @@ export const updateAccount = async (req, res) => {
         const { id } = req.params;
         const data = req.body;
 
-        // No permitimos actualizar el saldo directamente ni el número de cuenta por aquí
+        // No permitidos
         delete data.balance;
         delete data.accountNumber;
+        delete data.ownerId;
 
-        const updatedAccount = await Account.findByIdAndUpdate(id, data, { new: true });
-
-        if (!updatedAccount) {
-            return res.status(404).json({ success: false, message: 'Cuenta no encontrada' });
+        // Validar enums si vienen
+        if (data.accountType) {
+            const validAccountTypes = ['AHORRO', 'MONETARIA', 'CREDITO'];
+            if (!validAccountTypes.includes(data.accountType)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Tipo de cuenta no válido'
+                });
+            }
         }
 
-        res.status(200).json({ success: true, message: 'Cuenta actualizada', data: updatedAccount });
+        if (data.currency) {
+            const validCurrencies = ['GTQ', 'USD', 'EUR'];
+            if (!validCurrencies.includes(data.currency)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Moneda no válida'
+                });
+            }
+        }
+
+        const updatedAccount = await Account.findByIdAndUpdate(id, data, { 
+            new: true 
+        });
+
+        if (!updatedAccount) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta no encontrada'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Cuenta actualizada',
+            data: updatedAccount
+        });
+
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 

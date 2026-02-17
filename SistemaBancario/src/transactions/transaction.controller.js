@@ -1,12 +1,13 @@
 import Transaction from './transaction.model.js';
 import Account from '../accounts/account.model.js';
-import { convertirMoneda } from "../services/divisas.service.js";
+import { convertirMoneda } from "../services/divisas-service.js";
 
 
 export const createTransaction = async (req, res) => {
     try {
         const { type, amount, fromAccount, toAccount, description } = req.body;
 
+        //Campos obligatorios
         if (!type || !amount || !fromAccount || !description) {
             return res.status(400).json({
                 success: false,
@@ -14,6 +15,7 @@ export const createTransaction = async (req, res) => {
             });
         }
 
+        //Validar monto
         const amountNumber = Number(amount);
         if (isNaN(amountNumber) || amountNumber <= 0) {
             return res.status(400).json({
@@ -22,32 +24,68 @@ export const createTransaction = async (req, res) => {
             });
         }
 
-        // Buscar cuentas para la transacción
         const sourceAccount = await Account.findById(fromAccount);
-        const destinationAccount = toAccount ? await Account.findById(toAccount) : null;
+        const destinationAccount = toAccount
+            ? await Account.findById(toAccount)
+            : null;
 
         if (!sourceAccount) {
-            return res.status(404).json({ success: false, 
-                message: 'Cuenta de origen no encontrada' 
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta de origen no encontrada'
             });
         }
+
+        // Cuenta destino existente
         if (toAccount && !destinationAccount) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Cuenta de destino no encontrada' 
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta de destino no encontrada'
             });
         }
 
-        // Validar saldo suficiente
+        //máx Q2,000 por transferencia
+        if (type === 'TRANSFERENCIA' && amountNumber > 2000) {
+            return res.status(400).json({
+                success: false,
+                message: 'No puede transferir más de Q2,000 por transacción'
+            });
+        }
+
+        // máx Q10,000 diarios
+        if (type === 'TRANSFERENCIA') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const transfersToday = await Transaction.find({
+                fromAccount,
+                type: 'TRANSFERENCIA',
+                createdAt: { $gte: today }
+            });
+
+            const totalTransferredToday = transfersToday.reduce(
+                (sum, t) => sum + t.amount,
+                0
+            );
+
+            if (totalTransferredToday + amountNumber > 10000) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Ha excedido el límite diario de Q10,000. Ya ha transferido Q${totalTransferredToday.toFixed(2)} hoy.`
+                });
+            }
+        }
+
+        //saldo suficiente
         if (sourceAccount.balance < amountNumber) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Saldo insuficiente para la transferencia' 
+            return res.status(400).json({
+                success: false,
+                message: 'Saldo insuficiente para la transferencia'
             });
         }
 
-    
-    let finalAmount = amountNumber;
+        //Conversión de moneda
+        let finalAmount = amountNumber;
 
         if (
             destinationAccount &&
@@ -62,7 +100,6 @@ export const createTransaction = async (req, res) => {
             finalAmount = conversion.montoConvertido;
         }
 
-        // Realizar la transferencia
         sourceAccount.balance -= amountNumber;
 
         if (destinationAccount) {
@@ -72,10 +109,9 @@ export const createTransaction = async (req, res) => {
 
         await sourceAccount.save();
 
-        // Guardar transacción
         const transaction = new Transaction({
             type,
-            amount: finalAmount, 
+            amount: finalAmount,
             fromAccount: sourceAccount._id,
             toAccount: destinationAccount ? destinationAccount._id : null,
             description,
@@ -86,7 +122,7 @@ export const createTransaction = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: 'Transacción realizada con exito',
+            message: 'Transacción realizada con éxito',
             transaction
         });
 
