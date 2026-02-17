@@ -25,7 +25,8 @@ const transactionSchema = new mongoose.Schema(
         default: null
     },
     ownerId: {
-        type: String, // viene del JWT
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User', 
         required: true
     },
     description: {

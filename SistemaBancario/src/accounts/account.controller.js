@@ -1,6 +1,7 @@
 'use strict';
-import {generateAccountNumber} from '../helpers/account-number.js'
+import { generateAccountNumber } from '../helpers/account-number.js';
 import Account from './account.model.js';
+import User from '../users/user.model.js';
 
 // Crear cuenta (ADMIN)
 export const createAccount = async (req, res) => {
@@ -8,9 +9,26 @@ export const createAccount = async (req, res) => {
         const {
             accountType,
             currency,
-            balance,
+            balance = 0,
             ownerId
         } = req.body;
+
+        // Validar que el usuario exista
+        const user = await User.findById(ownerId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'El usuario propietario no existe'
+            });
+        }
+
+        //Si tiene ingresos abajo de Q100 no deberá dejar crear la cuenta
+        if (!user.monthlyIncome || user.monthlyIncome < 100) {
+            return res.status(400).json({
+                success: false,
+                message: 'El usuario debe tener ingresos mensuales de al menos Q100 para crear una cuenta'
+            });
+        }
 
         const account = new Account({
             accountNumber: generateAccountNumber(),

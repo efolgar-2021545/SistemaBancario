@@ -39,6 +39,21 @@ export const createDeposit = async (req, res) => {
             });
         }
 
+        // VALIDACIÓN: Verificar que las cuentas estén ACTIVAS
+        if (fromAccount.status !== 'ACTIVA') {
+            return res.status(400).json({
+                success: false,
+                message: 'La cuenta que envía el depósito está bloqueada'
+            });
+        }
+
+        if (toAccount.status !== 'ACTIVA') {
+            return res.status(400).json({
+                success: false,
+                message: 'La cuenta que recibe el depósito está bloqueada'
+            });
+        }
+
         // Validar saldo suficiente
         if (fromAccount.balance < amountNumber) {
             return res.status(400).json({
@@ -56,12 +71,19 @@ export const createDeposit = async (req, res) => {
                 amountNumber
             );
 
+            // VALIDACIÓN: Verificar que la conversión fue exitosa
+            if (!conversion || !conversion.montoConvertido) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error al convertir la moneda'
+                });
+            }
+
             finalAmount = conversion.montoConvertido;
         }
 
-        // Hacer la transferencia
-        fromAccount.balance -= amountNumber;// se le resta a la cuenta que va a depositar
-        toAccount.balance += amountNumfinalAmountber; // se le agrega el dinero a la cuenta que lo recibira
+        fromAccount.balance -= amountNumber;     // se le resta a la cuenta que va a depositar
+        toAccount.balance += finalAmount;        // se le agrega el dinero a la cuenta que lo recibira
 
         await fromAccount.save();
         await toAccount.save();
@@ -134,7 +156,7 @@ export const revertDeposit = async (req, res) => {
         if (diff > 180) {
             return res.status(400).json({
                 success: false,
-                message: 'Solo se puede revertir antes dede 3 minutos'
+                message: 'Solo se puede revertir antes de 3 minutos' 
             });
         }
 
@@ -146,6 +168,13 @@ export const revertDeposit = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: 'Alguna de las cuentas no fue encontrada'
+            });
+        }
+
+        if (fromAccount.status !== 'ACTIVA' || toAccount.status !== 'ACTIVA') {
+            return res.status(400).json({
+                success: false,
+                message: 'Una de las cuentas involucradas está bloqueada'
             });
         }
 
@@ -197,11 +226,32 @@ export const getDepositById = async (req, res) => {
     }
 };
 
+//  MODIFICADO: Solo permitir actualizar el monto (cantidad)
 export const updateDeposit = async (req, res) => {
     try {
         const { id } = req.params;
-        const { estado } = req.body;
-        const updated = await Deposit.findByIdAndUpdate(id, { estado }, { new: true });
+        const { amount } = req.body; // Solo cantidad, no estado
+
+        if (!amount) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe proporcionar el nuevo monto'
+            });
+        }
+
+        const amountNumber = Number(amount);
+        if (isNaN(amountNumber) || amountNumber <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'El monto debe ser un número positivo'
+            });
+        }
+
+        const updated = await Deposit.findByIdAndUpdate(
+            id, 
+            { amount: amountNumber }, 
+            { new: true }
+        );
 
         if (!updated) return res.status(404).json({ 
             success: false, 
@@ -210,6 +260,7 @@ export const updateDeposit = async (req, res) => {
 
         res.status(200).json({ 
             success: true, 
+            message: 'Monto del depósito actualizado',
             data: updated 
         });
 
@@ -221,24 +272,10 @@ export const updateDeposit = async (req, res) => {
     }
 };
 
+
 export const deleteDeposit = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const deleted = await Deposit.findByIdAndDelete(id);
-
-        if (!deleted) return res.status(404).json({ 
-            success: false, 
-            message: 'No encontrado' });
-
-        res.status(200).json({ 
-            success: true, 
-            message: 'Eliminado' 
-        });
-
-    } catch (error) { 
-        res.status(500).json({ 
-            success: false, 
-            message: error.message 
-        }); 
-    }
+    return res.status(403).json({
+        success: false,
+        message: 'Los depósitos no pueden ser eliminados según las políticas del sistema. Use la función de reversión si es necesario.'
+    });
 };

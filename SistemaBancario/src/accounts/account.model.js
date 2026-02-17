@@ -16,7 +16,18 @@ const accountSchema = new mongoose.Schema(
             required: true
         },
         ownerId: {
-            type: String,
+            // ✅ CAMBIO EXPLICADO:
+            // ANTES: type: String → guardaba texto cualquiera como "juan123" o "abc"
+            // AHORA: type: mongoose.Schema.Types.ObjectId → guarda el ID real de MongoDB
+            type: mongoose.Schema.Types.ObjectId,
+            
+            // ref: 'User' → Le dice a Mongoose que este ID pertenece a un documento de la colección "users"
+            // Esto permite:
+            // 1. Validar que el ID existe en la colección users
+            // 2. Hacer populate para traer los datos completos del usuario
+            // 3. Mantener la relación: "esta cuenta pertenece a este usuario"
+            ref: 'User',
+            
             required: true
         },
         balance: {

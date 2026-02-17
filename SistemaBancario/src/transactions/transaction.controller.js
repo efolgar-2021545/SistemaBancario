@@ -27,10 +27,13 @@ export const createTransaction = async (req, res) => {
         const destinationAccount = toAccount ? await Account.findById(toAccount) : null;
 
         if (!sourceAccount) {
-            return res.status(404).json({ success: false, 
+            return res.status(404).json({ 
+                success: false, 
                 message: 'Cuenta de origen no encontrada' 
             });
         }
+        
+        // que sea una cuenta existente
         if (toAccount && !destinationAccount) {
             return res.status(404).json({ 
                 success: false, 
@@ -38,7 +41,33 @@ export const createTransaction = async (req, res) => {
             });
         }
 
-        // Validar saldo suficiente
+        if (type === 'TRANSFERENCIA' && amountNumber > 2000) {
+            return res.status(400).json({
+                success: false,
+                message: 'No puede transferir más de Q2,000 por transacción'
+            });
+        }
+
+        if (type === 'TRANSFERENCIA') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const transfersToday = await Transaction.find({
+                fromAccount: fromAccount,
+                type: 'TRANSFERENCIA',
+                createdAt: { $gte: today }
+            });
+
+            const totalTransferredToday = transfersToday.reduce((sum, t) => sum + t.amount, 0);
+
+            if (totalTransferredToday + amountNumber > 10000) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Ha excedido el límite diario de Q10,000. Ya ha transferido Q${totalTransferredToday.toFixed(2)} hoy.`
+                });
+            }
+        }
+
         if (sourceAccount.balance < amountNumber) {
             return res.status(400).json({ 
                 success: false, 
@@ -46,8 +75,7 @@ export const createTransaction = async (req, res) => {
             });
         }
 
-    
-    let finalAmount = amountNumber;
+        let finalAmount = amountNumber;
 
         if (
             destinationAccount &&
@@ -86,7 +114,7 @@ export const createTransaction = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: 'Transacción realizada con exito',
+            message: 'Transacción realizada con éxito',
             transaction
         });
 
@@ -100,14 +128,22 @@ export const createTransaction = async (req, res) => {
 };
 
 export const getTransactions = async (req, res) => {
-    const transactions = await Transaction.find()
-        .populate('fromAccount', 'accountNumber balance')
-        .populate('toAccount', 'accountNumber');
+    try {
+        const transactions = await Transaction.find()
+            .populate('fromAccount', 'accountNumber balance')
+            .populate('toAccount', 'accountNumber');
 
-    res.json({
-        success: true,
-        data: transactions
-    });
+        res.json({
+            success: true,
+            data: transactions
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener transacciones',
+            error: error.message
+        });
+    }
 };
 
 // Buscar transacción por ID (ADMIN o Propietario)

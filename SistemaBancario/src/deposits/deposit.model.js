@@ -11,13 +11,19 @@ const depositSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        fromAccountId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Account',
+            required: true
+        },
         amount: {
             type: Number,
             required: true,
             min: 1
         },
         ownerId: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'User', 
             required: true
         },
         estado: {
