@@ -8,8 +8,6 @@ import morgan from 'morgan';
 const BASE_PATH = '/kinalBank/v1';
 
 //Se importaran todos los routes de las entidades
-import userRoutes from '../src/users/user.routes.js';
-import authRoutes from '../src/auth/auth.routes.js';
 import transactionRoutes from '../src/transactions/transaction.routes.js';
 import accountRoutes from '../src/accounts/account.routes.js';
 import depositRoutes from '../src/deposits/deposit.routes.js';
@@ -23,8 +21,6 @@ export const initApp = () => {
   app.use(helmet());
   app.use(morgan('dev'));
 
-  app.use(BASE_PATH, userRoutes);
-  app.use(BASE_PATH, authRoutes);
   app.use(`${BASE_PATH}/transactions`, transactionRoutes);
   app.use(`${BASE_PATH}/accounts`, accountRoutes);
   app.use(`${BASE_PATH}/deposits`, depositRoutes);

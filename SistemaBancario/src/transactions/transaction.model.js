@@ -3,42 +3,39 @@
 import mongoose from 'mongoose';
 
 const transactionSchema = new mongoose.Schema(
-    {
-        tipo: {
-            type: String,
-            enum: ['DEPOSITO', 'TRANSFERENCIA', 'COMPRA', 'CREDITO'],
-            required: [true, 'El tipo de transacción es obligatorio']
-        },
-        monto: {
-            type: Number,
-            required: [true, 'El monto es obligatorio'],
-            min: [0.01, 'El monto debe ser mayor a 0']
-        },
-        cuentaOrigenId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: [true, 'La cuenta origen es obligatoria']
-        },
-        cuentaDestinoId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            default: null
-        },
-        descripcion: {
-            type: String,
-            required: [true, 'La descripción es obligatoria'],
-            trim: true,
-            maxlength: [200, 'La descripción no puede exceder de 200 caracteres']
-        },
-        fecha: {
-            type: Date,
-            default: Date.now
-        }
+{
+    type: {
+        type: String,
+        enum: ['DEPOSITO', 'TRANSFERENCIA', 'COMPRA', 'CREDITO'],
+        required: true
     },
-    {
-        timestamps: true,
-        versionKey: false
+    amount: {
+        type: Number,
+        required: true,
+        min: 0.01
+    },
+    fromAccount: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Account',
+        required: true
+    },
+    toAccount: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Account',
+        default: null
+    },
+    ownerId: {
+        type: String, // viene del JWT
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
     }
-);
+},
+{
+    timestamps: true,
+    versionKey: false
+});
 
 export default mongoose.model('Transaction', transactionSchema);

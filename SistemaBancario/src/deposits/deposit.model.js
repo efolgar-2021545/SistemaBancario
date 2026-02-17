@@ -2,32 +2,32 @@ import mongoose from "mongoose";
 
 const depositSchema = new mongoose.Schema(
     {
-        cuentaId: {
+        accountId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Account',
             required: true
         },
-
-        monto: {
+        accountNumber: {
+            type: String,
+            required: true
+        },
+        amount: {
             type: Number,
             required: true,
-            min: 0
+            min: 1
         },
-
+        ownerId: {
+            type: String,
+            required: true
+        },
+        estado: {
+            type: String,
+            enum: ['COMPLETADO', 'REVERTIDO'],
+            default: 'COMPLETADO'
+        },
         fecha: {
             type: Date,
             default: Date.now
-        },
-
-        estado: {
-            type: String,
-            enum: ['ACTIVO', 'REVERTIDO'],
-            default: 'ACTIVO'
-        },
-
-        modificado: {
-            type: Boolean,
-            default: false
         }
     },
     {

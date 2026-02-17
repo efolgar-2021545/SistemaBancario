@@ -1,12 +1,51 @@
 import { Router } from "express";
-import { createDeposit, getDeposits, revertDeposit } from "./deposit.controller.js";
-
+import { createDeposit, getDeposits, revertDeposit, getDepositById, updateDeposit, deleteDeposit } from "./deposit.controller.js";
+import { validateJWT } from '../middlewares/validate-jwt.js';
+import { validateClient } from '../middlewares/validate-client.js';
+import { validateAdmin } from "../middlewares/validate-admin.js";
 const router = Router();
 
-router.post('/create', createDeposit);
+router.post(
+    '/create',
+    validateJWT, 
+    validateClient,
+    createDeposit
+);
 
-router.get('/', getDeposits);
+//los depositos solo las puede ver el admin
+router.get(
+    '/', 
+    validateJWT,
+    validateAdmin,
+    getDeposits
+);
 
-router.put('/revert/:id', revertDeposit);
+router.put(
+    '/revert/:id',
+    validateJWT, 
+    validateClient,
+    revertDeposit
+);
+
+router.get(
+    '/:id', 
+    validateJWT, 
+    validateClient, 
+    getDepositById
+);
+
+router.put(
+    '/update/:id', 
+    validateJWT, 
+    validateAdmin, 
+    updateDeposit
+);
+
+router.delete(
+    '/:id', 
+    validateJWT, 
+    validateAdmin, 
+    deleteDeposit
+);
 
 export default router;

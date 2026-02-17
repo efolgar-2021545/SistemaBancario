@@ -4,10 +4,19 @@ import mongoose from 'mongoose';
 
 const accountSchema = new mongoose.Schema(
     {
+        accountNumber: {
+            type: String,
+            required: true,
+            unique: true
+        },
         accountType: {
             type: String,
             enum: ['AHORRO', 'MONETARIA', 'CREDITO'],
             default: 'AHORRO',
+            required: true
+        },
+        ownerId: {
+            type: String,
             required: true
         },
         balance: {
@@ -25,11 +34,6 @@ const accountSchema = new mongoose.Schema(
             type: String,
             enum: ['ACTIVA', 'BLOQUEADA'],
             default: 'ACTIVA',
-            required: true
-        },
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
             required: true
         }
     },

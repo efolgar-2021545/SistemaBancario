@@ -1,6 +1,6 @@
 'use strict';
 
-export const validateAdmin = (req, res, next) => {
+export const validateClient = (req, res, next) => {
     try {
         if (!req.user || !req.user.role) {
             return res.status(401).json({
@@ -9,10 +9,10 @@ export const validateAdmin = (req, res, next) => {
             });
         }
 
-        if (req.user.role !== 'ADMIN') {
+        if (req.user.role !== 'CLIENT') {
             return res.status(403).json({
                 success: false,
-                message: 'Acceso denegado: solo ADMIN'
+                message: 'Acceso denegado: solo CLIENT'
             });
         }
 
