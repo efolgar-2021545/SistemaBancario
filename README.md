@@ -38,6 +38,8 @@
 
 / El sistema bancario utiliza autenticación mediante JWT (JSON Web Token).
 
+ **IMPORTANTE: Cada peticion debe llevar su BEARER TOKEN correspondiente, segun sea la peticion debe ser, token de ADMIN o de CLIENTE**
+
 / **Por ultimo, para poder acceder a los endpoints del sistema bancario**
 / 1. Primero se debe iniciar sesión en el sistema AuthBanco.
 / 2. Obtener el token JWT(de Admin o de User).
