@@ -41,8 +41,11 @@
  **IMPORTANTE: Cada peticion debe llevar su BEARER TOKEN correspondiente, segun sea la peticion debe ser, token de ADMIN o de CLIENTE**
 
 / **Por ultimo, para poder acceder a los endpoints del sistema bancario**
+
 / 1. Primero se debe iniciar sesión en el sistema AuthBanco.
+
 / 2. Obtener el token JWT(de Admin o de User).
+
 / 3. Enviar el token en Autorizathion en el thype **Bearer Token** de cada petición en Postman: En algunos se utiliza el token de admin y en otros se usa el de user.
 
 ***https://alacan-2024010-3215566.postman.co/workspace/EJEMPLO~3a315322-cf2c-4a64-8448-ab67e4d8e872/request/48332460-d96402d2-8d02-4514-b1f5-ff2c1d5d31ba?action=share&creator=48332460&ctx=documentation***
