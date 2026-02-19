@@ -1,4 +1,4 @@
-# SistemaBancario
+# Sistema de autenticacion
 
 **Probar sistema de autenticacion AUTH:** 
 / Para probar el sistema de auth se debe de estar en la ruta:
@@ -31,6 +31,8 @@
  	:C\\IN6BM Folgar\\KinalBank\\SistemaBancario\\SistemaBancario
 
 / **Instalar en la terminal pnpm con:** pnpm install nodemon
+
+/ **Instalar la dependencia en la terminar de axios con: :** pnpm add axios
 
 / **En la terminar iniciar la API:** pnpm run dev
 
