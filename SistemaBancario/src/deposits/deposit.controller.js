@@ -4,10 +4,10 @@ import { convertirMoneda } from "../services/divisas-service.js";
 
 export const createDeposit = async (req, res) => {
     try {
-        const { fromAccountId, accountId, amount } = req.body;
+        const {accountId, amount , currency} = req.body;
 
         // Validar campos
-        if (!fromAccountId || !accountId || !amount) {
+        if ( !accountId || !amount) {
             return res.status(400).json({
                 success: false,
                 message: 'Datos incompletos'
@@ -23,15 +23,8 @@ export const createDeposit = async (req, res) => {
             });
         }
 
-        const fromAccount = await Account.findById(fromAccountId);
         const toAccount = await Account.findById(accountId);
 
-        if (!fromAccount) {
-            return res.status(404).json({
-                success: false,
-                message: 'Cuenta que envía el depósito no encontrada'
-            });
-        }
 
         if (!toAccount) {
             return res.status(404).json({
@@ -40,39 +33,40 @@ export const createDeposit = async (req, res) => {
             });
         }
 
-        // Validar saldo suficiente
-        if (fromAccount.balance < amountNumber) {
-            return res.status(400).json({
-                success: false,
-                message: 'Saldo insuficiente en la cuenta que envía el depósito'
-            });
-        }
 
         //Conversión de moneda si aplica
         let finalAmount = amountNumber;
 
-        if (fromAccount.currency !== toAccount.currency) {
+        if (currency && currency !== toAccount.currency) {
+
             const conversion = await convertirMoneda(
-                fromAccount.currency,
+                currency,
                 toAccount.currency,
                 amountNumber
             );
 
+            if (!conversion || !conversion.montoConvertido) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Error en la conversión de moneda'
+                });
+            }
+
             finalAmount = conversion.montoConvertido;
         }
 
-        fromAccount.balance -= amountNumber;
-        toAccount.balance += finalAmount;
 
-        await fromAccount.save();
+        toAccount.balance += finalAmount;
         await toAccount.save();
 
+
+        
         const deposit = new Deposit({
             accountId: toAccount._id,
             accountNumber: toAccount.accountNumber,
-            fromAccountId: fromAccount._id,
             amount: finalAmount,
-            ownerId: fromAccount._id.toString() // usamos la cuenta como referencia
+            ownerId: toAccount.ownerId,
+            estado: 'COMPLETADO'
         });
 
         await deposit.save();
@@ -140,20 +134,17 @@ export const revertDeposit = async (req, res) => {
 
         // Obtener cuentas involucradas
         const toAccount = await Account.findById(deposit.accountId);
-        const fromAccount = await Account.findById(deposit.fromAccountId);
 
-        if (!toAccount || !fromAccount) {
+        if (!toAccount) {
             return res.status(404).json({
                 success: false,
-                message: 'Alguna de las cuentas no fue encontrada'
+                message: 'Cuenta no encontrada'
             });
         }
 
-        // Revertir la transferencia
-        toAccount.balance -= deposit.amount;     // se resta de quien recibió
-        fromAccount.balance += deposit.amount;   // se devuelve al remitente
+        // Revertir el deposito
+        toAccount.balance -= deposit.amount;  
         await toAccount.save();
-        await fromAccount.save();
 
         deposit.estado = 'REVERTIDO';
         await deposit.save();
