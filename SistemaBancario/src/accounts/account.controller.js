@@ -3,7 +3,6 @@ import {generateAccountNumber} from '../helpers/account-number.js'
 import Account from './account.model.js';
 
 // Crear cuenta (ADMIN)
-// Crear cuenta (ADMIN)
 export const createAccount = async (req, res) => {
     try {
         const { accountType, currency, balance = 0, ownerId } = req.body;
