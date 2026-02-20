@@ -9,10 +9,36 @@ const transactionSchema = new mongoose.Schema(
         enum: ['DEPOSITO', 'TRANSFERENCIA', 'COMPRA', 'CREDITO'],
         required: true
     },
-    amount: {
+    // Monto enviado
+    amountSent: {
         type: Number,
         required: true,
         min: 0.01
+    },
+
+    // Monto recibido
+    amountReceived: {
+        type: Number,
+        required: true,
+        min: 0.01
+    },
+
+    // Moneda origen
+    currencyFrom: {
+        type: String,
+        required: true
+    },
+
+    // Moneda destino
+    currencyTo: {
+        type: String,
+        required: true
+    },
+
+    // Esta es la tasa
+    exchangeRate: {
+        type: Number,
+        default: 1
     },
     fromAccount: {
         type: mongoose.Schema.Types.ObjectId,

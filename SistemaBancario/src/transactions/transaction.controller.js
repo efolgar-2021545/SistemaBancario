@@ -44,11 +44,12 @@ export const createTransaction = async (req, res) => {
             });
         }
 
-        //máx Q2,000 por transferencia
+        //máx 2,000 por transferencia
+        // Límite por transferencia 
         if (type === 'TRANSFERENCIA' && amountNumber > 2000) {
             return res.status(400).json({
                 success: false,
-                message: 'No puede transferir más de Q2,000 por transacción'
+                message: `No puede transferir más de 2000 ${sourceAccount.currency}`
             });
         }
 
@@ -63,15 +64,15 @@ export const createTransaction = async (req, res) => {
                 createdAt: { $gte: today }
             });
 
-            const totalTransferredToday = transfersToday.reduce(
-                (sum, t) => sum + t.amount,
+            const totalToday = transfersToday.reduce(
+                (sum, t) => sum + t.amountSent,
                 0
             );
 
-            if (totalTransferredToday + amountNumber > 10000) {
+            if (totalToday + amountNumber > 10000) {
                 return res.status(400).json({
                     success: false,
-                    message: `Ha excedido el límite diario de Q10,000. Ya ha transferido Q${totalTransferredToday.toFixed(2)} hoy.`
+                    message: `Ha excedido el límite diario de 10,000 ${sourceAccount.currency}`
                 });
             }
         }
@@ -86,7 +87,9 @@ export const createTransaction = async (req, res) => {
 
         //Conversión de moneda
         let finalAmount = amountNumber;
+        let exchangeRate = 1;
 
+        // Conversión si monedas distintas
         if (
             destinationAccount &&
             sourceAccount.currency !== destinationAccount.currency
@@ -98,8 +101,10 @@ export const createTransaction = async (req, res) => {
             );
 
             finalAmount = conversion.montoConvertido;
+            exchangeRate = conversion.tasa;
         }
 
+        // Actualizar saldos
         sourceAccount.balance -= amountNumber;
 
         if (destinationAccount) {
@@ -111,7 +116,13 @@ export const createTransaction = async (req, res) => {
 
         const transaction = new Transaction({
             type,
-            amount: finalAmount,
+            amountSent: amountNumber,
+            amountReceived: finalAmount,
+            currencyFrom: sourceAccount.currency,
+            currencyTo: destinationAccount
+                ? destinationAccount.currency
+                : sourceAccount.currency,
+            exchangeRate,
             fromAccount: sourceAccount._id,
             toAccount: destinationAccount ? destinationAccount._id : null,
             description,
@@ -119,6 +130,7 @@ export const createTransaction = async (req, res) => {
         });
 
         await transaction.save();
+
 
         return res.status(201).json({
             success: true,
@@ -177,12 +189,19 @@ export const updateTransaction = async (req, res) => {
         );
 
         if (!updatedTransaction) {
-            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Transacción no encontrada' 
+            });
         }
 
-        res.status(200).json({ success: true, data: updatedTransaction });
+        res.status(200).json({ 
+            success: true, data: updatedTransaction 
+        });
     } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        res.status(400).json({ 
+            success: false, message: error.message 
+        });
     }
 };
 
@@ -193,11 +212,17 @@ export const deleteTransaction = async (req, res) => {
         const transaction = await Transaction.findByIdAndDelete(id);
 
         if (!transaction) {
-            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
+            return res.status(404).json({ 
+                success: false, message: 'Transacción no encontrada' 
+            });
         }
 
-        res.status(200).json({ success: true, message: 'Registro de transacción eliminado' });
+        res.status(200).json({ 
+            success: true, 
+            message: 'Registro de transacción eliminado' });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ 
+            success: false, 
+            message: error.message });
     }
 };
