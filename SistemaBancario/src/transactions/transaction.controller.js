@@ -182,21 +182,39 @@ export const updateTransaction = async (req, res) => {
         const { id } = req.params;
         const { description } = req.body;
 
-        const updatedTransaction = await Transaction.findByIdAndUpdate(
-            id, 
-            { description }, 
-            { new: true }
-        );
-
-        if (!updatedTransaction) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Transacción no encontrada' 
+        if (!description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe enviar una descripción'
             });
         }
 
+        const transaction = await Transaction.findById(id);
+
+        if(!transaction ){
+            return res.status(400).json({
+                success: false,
+                message: 'Transacción no encontrada'
+            })
+        }
+
+        //se declaran variables para modificar la transacción
+        const fiveMinutes = 5 * 60 * 1000;
+        const now = new Date();
+        const createdAt = new Date(transaction.createdAt);
+
+        if (now - createdAt > fiveMinutes) {
+            return res.status(400).json({
+                success: false,
+                message: 'Solo puede modificar la transacción dentro de los primeros 5 minutos'
+            });
+        }
+
+        transaction.description = description;
+        await transaction.save();
+
         res.status(200).json({ 
-            success: true, data: updatedTransaction 
+            success: true, data: transaction 
         });
     } catch (error) {
         res.status(400).json({ 

@@ -31,14 +31,14 @@ router.get(
 router.put(
     '/:id', 
     validateJWT, 
-    validateAdmin, 
+    validateClient, 
     updateTransaction
 );
 
 router.delete(
     '/:id', 
     validateJWT, 
-    validateAdmin, 
+    validateClient, 
     deleteTransaction
 );
 
