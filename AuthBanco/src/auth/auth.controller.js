@@ -46,6 +46,13 @@ export const register = async (req, res) => {
       })
     }
 
+    if(!dpi || dpi.length !==13){
+      return res.status(400).json({
+        success:false,
+        message: 'El DPI tiene que tener 13 números'
+      })
+    }
+
     // Verificar duplicados
     const exists = await User.findOne({
       where: { Email: email },
@@ -56,6 +63,17 @@ export const register = async (req, res) => {
         success: false,
         message: 'Correo ya registrado',
       });
+    }
+
+    const existsUsername = await User.findOne({
+      where : {Username: username}
+    })
+
+    if(existsUsername){
+      return res.status(400).json({
+        success: false,
+        message: 'Username ya registrado'
+      })
     }
 
     // Buscar rol CLIENT
