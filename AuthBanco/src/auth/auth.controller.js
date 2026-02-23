@@ -24,12 +24,26 @@ export const register = async (req, res) => {
       monthlyIncome,
     } = req.body;
 
-    // Validar ingresos
-    if (monthlyIncome < 100) {
+    if (!password || password.length < 8) {
       return res.status(400).json({
         success: false,
-        message: 'Ingresos mínimos Q100 requeridos',
+        message: 'La contraseña tiene que tener mínimo 8 caracteres'
       });
+    }
+
+    // Validar ingresos(solo permite numeros)
+    if (isNaN(monthlyIncome) || Number(monthlyIncome) < 100) {
+      return res.status(400).json({
+        success: false,
+        message: 'Ingresos inválidos',
+      });
+    }
+      
+    if(!name || !username || !email || !password ||!dpi ||!address ||!phone||!job || !monthlyIncome){
+      return res.status(400).json({
+        success:false,
+        message: 'Todos los campos son obligaotrios'
+      })
     }
 
     // Verificar duplicados
