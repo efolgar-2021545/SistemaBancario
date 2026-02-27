@@ -1,0 +1,246 @@
+import Transaction from './transaction.model.js';
+import Account from '../accounts/account.model.js';
+import { convertirMoneda } from "../services/divisas-service.js";
+
+
+export const createTransaction = async (req, res) => {
+    try {
+        const { type, amount, fromAccount, toAccount, description } = req.body;
+
+        //Campos obligatorios
+        if (!type || !amount || !fromAccount || !description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Datos incompletos para la transacción'
+            });
+        }
+
+        //Validar monto
+        const amountNumber = Number(amount);
+        if (isNaN(amountNumber) || amountNumber <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Monto inválido'
+            });
+        }
+
+        const sourceAccount = await Account.findById(fromAccount);
+        const destinationAccount = toAccount
+            ? await Account.findById(toAccount)
+            : null;
+
+        if (!sourceAccount) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta de origen no encontrada'
+            });
+        }
+
+        // Cuenta destino existente
+        if (toAccount && !destinationAccount) {
+            return res.status(404).json({
+                success: false,
+                message: 'Cuenta de destino no encontrada'
+            });
+        }
+
+        //máx 2,000 por transferencia
+        // Límite por transferencia 
+        if (type === 'TRANSFERENCIA' && amountNumber > 2000) {
+            return res.status(400).json({
+                success: false,
+                message: `No puede transferir más de 2000 ${sourceAccount.currency}`
+            });
+        }
+
+        // máx Q10,000 diarios
+        if (type === 'TRANSFERENCIA') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const transfersToday = await Transaction.find({
+                fromAccount,
+                type: 'TRANSFERENCIA',
+                createdAt: { $gte: today }
+            });
+
+            const totalToday = transfersToday.reduce(
+                (sum, t) => sum + t.amountSent,
+                0
+            );
+
+            if (totalToday + amountNumber > 10000) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Ha excedido el límite diario de 10,000 ${sourceAccount.currency}`
+                });
+            }
+        }
+
+        //saldo suficiente
+        if (sourceAccount.balance < amountNumber) {
+            return res.status(400).json({
+                success: false,
+                message: 'Saldo insuficiente para la transferencia'
+            });
+        }
+
+        //Conversión de moneda
+        let finalAmount = amountNumber;
+        let exchangeRate = 1;
+
+        // Conversión si monedas distintas
+        if (
+            destinationAccount &&
+            sourceAccount.currency !== destinationAccount.currency
+        ) {
+            const conversion = await convertirMoneda(
+                sourceAccount.currency,
+                destinationAccount.currency,
+                amountNumber
+            );
+
+            finalAmount = conversion.montoConvertido;
+            exchangeRate = conversion.tasa;
+        }
+
+        // Actualizar saldos
+        sourceAccount.balance -= amountNumber;
+
+        if (destinationAccount) {
+            destinationAccount.balance += finalAmount;
+            await destinationAccount.save();
+        }
+
+        await sourceAccount.save();
+
+        const transaction = new Transaction({
+            type,
+            amountSent: amountNumber,
+            amountReceived: finalAmount,
+            currencyFrom: sourceAccount.currency,
+            currencyTo: destinationAccount
+                ? destinationAccount.currency
+                : sourceAccount.currency,
+            exchangeRate,
+            fromAccount: sourceAccount._id,
+            toAccount: destinationAccount ? destinationAccount._id : null,
+            description,
+            ownerId: req.user.id
+        });
+
+        await transaction.save();
+
+
+        return res.status(201).json({
+            success: true,
+            message: 'Transacción realizada con éxito',
+            transaction
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al realizar la transacción',
+            error: error.message
+        });
+    }
+};
+
+export const getTransactions = async (req, res) => {
+    const transactions = await Transaction.find()
+        .populate('fromAccount', 'accountNumber balance')
+        .populate('toAccount', 'accountNumber');
+
+    res.json({
+        success: true,
+        data: transactions
+    });
+};
+
+// Buscar transacción por ID (ADMIN o Propietario)
+export const getTransactionById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const transaction = await Transaction.findById(id)
+            .populate('fromAccount')
+            .populate('toAccount');
+
+        if (!transaction) {
+            return res.status(404).json({ success: false, message: 'Transacción no encontrada' });
+        }
+
+        res.status(200).json({ success: true, data: transaction });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Actualizar transacción (ADMIN - Solo descripción)
+export const updateTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { description } = req.body;
+
+        if (!description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe enviar una descripción'
+            });
+        }
+
+        const transaction = await Transaction.findById(id);
+
+        if(!transaction ){
+            return res.status(400).json({
+                success: false,
+                message: 'Transacción no encontrada'
+            })
+        }
+
+        //se declaran variables para modificar la transacción
+        const fiveMinutes = 5 * 60 * 1000;
+        const now = new Date();
+        const createdAt = new Date(transaction.createdAt);
+
+        if (now - createdAt > fiveMinutes) {
+            return res.status(400).json({
+                success: false,
+                message: 'Solo puede modificar la transacción dentro de los primeros 5 minutos'
+            });
+        }
+
+        transaction.description = description;
+        await transaction.save();
+
+        res.status(200).json({ 
+            success: true, data: transaction 
+        });
+    } catch (error) {
+        res.status(400).json({ 
+            success: false, message: error.message 
+        });
+    }
+};
+
+// Eliminar transacción (ADMIN)
+export const deleteTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const transaction = await Transaction.findByIdAndDelete(id);
+
+        if (!transaction) {
+            return res.status(404).json({ 
+                success: false, message: 'Transacción no encontrada' 
+            });
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'Registro de transacción eliminado' });
+    } catch (error) {
+        res.status(500).json({ 
+            success: false, 
+            message: error.message });
+    }
+};

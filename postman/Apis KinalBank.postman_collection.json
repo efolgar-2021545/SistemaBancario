@@ -1,0 +1,734 @@
+{
+  "info": {
+    "_postman_id": "9d3b69a5-d029-4a9c-a1da-c980cd2226bd",
+    "name": "Apis KinalBank",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48332460",
+    "_collection_link": "https://go.postman.co/collection/48332460-9d3b69a5-d029-4a9c-a1da-c980cd2226bd?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "AuthBanco",
+      "item": [
+        {
+          "name": "Registrarse - Cliente",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Alan Perez\",\r\n  \"username\": \"alancito\",\r\n  \"email\": \"alan2007lf@gmail.com\",\r\n  \"password\": \"123\",\r\n  \"dpi\": \"1212454578788\",\r\n  \"address\": \"Zona 1\",\r\n  \"phone\": \"12215588\",\r\n  \"job\": \"Ingeniero\",\r\n  \"monthlyIncome\": 5000\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3005/api/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3005",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "LoginAdmin - Admin",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@bank.com\",\r\n  \"password\": \"ADMINB\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3005/api/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3005",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UsuariosPendientes - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3005/api/v1/users/pending",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3005",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "pending"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AprobarUsuario - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"usr_f9DuKFcRuQPD\",\r\n  \"role\": \"CLIENT\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3005/api/v1/users/approve",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3005",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "approve"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UserLogin - Cliente",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"alan2007lf@gmail.com\",\r\n  \"password\": \"123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3005/api/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3005",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SistemaBancario",
+      "item": [
+        {
+          "name": "CreateAccount - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"accountType\":\"CREDITO\",\r\n    \"ownerId\":\"usr_f9DuKFcRuQPD\",\r\n    \"balance\":500,\r\n    \"currency\":\"USD\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/accounts/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "accounts",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAccounts - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfWTVNYWRhNlNaV3VtIiwianRpIjoiNzc1NDJmZGItODY5ZC00NjFkLTk4MzMtZTE3MjY5ZGIyMzA0IiwiaWF0IjoxNzcxNjIzMzA2LCJyb2xlIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGJhbmsuY29tIiwiZXhwIjoxNzcxNjI1MTA2LCJhdWQiOiJBdXRoU2VydmljZSIsImlzcyI6IkF1dGhTZXJ2aWNlIn0.KviOy1Ow0ZF2D96f4joXqBe3IAPk9Tx4SgJ1lXMii5g",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/accounts/listar",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "accounts",
+                "listar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetByIdAccount - Admin",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/accounts/listar/6998cb734b86d3f87cb6bbcb",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "accounts",
+                "listar",
+                "6998cb734b86d3f87cb6bbcb"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateAccounts - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"accountType\":\"MONETARIA\",\r\n    \"ownerId\":\"usr_f9DuKFcRuQPD\",\r\n    \"currency\":\"GTQ\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/accounts/6998cb734b86d3f87cb6bbcb",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "accounts",
+                "6998cb734b86d3f87cb6bbcb"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteAccount - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/accounts/69988dfd3a5ccd663fc34a0c",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "accounts",
+                "69988dfd3a5ccd663fc34a0c"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateDeposit - Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfZjlEdUtGY1J1UVBEIiwianRpIjoiNjVjMDdhOTQtYmQzMy00YWQ2LWFiYzgtNWJlNmI3MjUxYjViIiwiaWF0IjoxNzcxNjIzMjEwLCJyb2xlIjoiQ0xJRU5UIiwiZW1haWwiOiJhbGFuMjAwN2xmQGdtYWlsLmNvbSIsImV4cCI6MTc3MTYyNTAxMCwiYXVkIjoiQXV0aFNlcnZpY2UiLCJpc3MiOiJBdXRoU2VydmljZSJ9.SX7zjIVnC7hVPundjCh6MndeN-HqVwdXSMi0TNHzMho",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"accountId\": \"6998ccd41b1853da182ae368\",\r\n  \"amount\": 100,\r\n  \"currency\": \"USD\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/deposits/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "deposits",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetDeposit - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfWTVNYWRhNlNaV3VtIiwianRpIjoiNzc1NDJmZGItODY5ZC00NjFkLTk4MzMtZTE3MjY5ZGIyMzA0IiwiaWF0IjoxNzcxNjIzMzA2LCJyb2xlIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGJhbmsuY29tIiwiZXhwIjoxNzcxNjI1MTA2LCJhdWQiOiJBdXRoU2VydmljZSIsImlzcyI6IkF1dGhTZXJ2aWNlIn0.KviOy1Ow0ZF2D96f4joXqBe3IAPk9Tx4SgJ1lXMii5g",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/deposits",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "deposits"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetByIdDeposit - Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/deposits/69910e7a1c7e4a82bc89f65a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "deposits",
+                "69910e7a1c7e4a82bc89f65a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RevertDeposit - Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfZjlEdUtGY1J1UVBEIiwianRpIjoiNjVjMDdhOTQtYmQzMy00YWQ2LWFiYzgtNWJlNmI3MjUxYjViIiwiaWF0IjoxNzcxNjIzMjEwLCJyb2xlIjoiQ0xJRU5UIiwiZW1haWwiOiJhbGFuMjAwN2xmQGdtYWlsLmNvbSIsImV4cCI6MTc3MTYyNTAxMCwiYXVkIjoiQXV0aFNlcnZpY2UiLCJpc3MiOiJBdXRoU2VydmljZSJ9.SX7zjIVnC7hVPundjCh6MndeN-HqVwdXSMi0TNHzMho",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/deposits/revert/69910e7a1c7e4a82bc89f65a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "deposits",
+                "revert",
+                "69910e7a1c7e4a82bc89f65a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteDeposit - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/deposits/69910e7a1c7e4a82bc89f65a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "deposits",
+                "69910e7a1c7e4a82bc89f65a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateTransactions - Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"type\": \"TRANSFERENCIA\",\r\n  \"amount\": 100,\r\n  \"fromAccount\": \"6998cd211b1853da182ae375\",\r\n  \"toAccount\": \"6993aff4c3f5a621e08cedce\",\r\n  \"description\": \"Transferencia USD a GTQ\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/transactions/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "transactions",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetTransactions - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfWTVNYWRhNlNaV3VtIiwianRpIjoiMWU1NDc3NGMtYmVkMC00NDIzLWI0NGQtODhkN2QwMWY1OGQzIiwiaWF0IjoxNzcxNjI2MTE2LCJyb2xlIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGJhbmsuY29tIiwiZXhwIjoxNzcxNjI3OTE2LCJhdWQiOiJBdXRoU2VydmljZSIsImlzcyI6IkF1dGhTZXJ2aWNlIn0.-6yfFbrLWO0TD9Idbv3K0LjpaCqfRS9assyqRIoxT80",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/transactions/listar",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "transactions",
+                "listar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetByIdTransaction - Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/transactions/699110f36ac72fdd4317b9e4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "transactions",
+                "699110f36ac72fdd4317b9e4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateTransaction - Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfZjlEdUtGY1J1UVBEIiwianRpIjoiNzE4NTgyMzAtZDJiNi00Y2EyLTgxNGEtZDI4ZTc1NjFiNzg5IiwiaWF0IjoxNzcxNjI2NzYyLCJyb2xlIjoiQ0xJRU5UIiwiZW1haWwiOiJhbGFuMjAwN2xmQGdtYWlsLmNvbSIsImV4cCI6MTc3MTYyODU2MiwiYXVkIjoiQXV0aFNlcnZpY2UiLCJpc3MiOiJBdXRoU2VydmljZSJ9.iqKhw4J5beVHTmAW8F_2k1932nJMnxBPzjElh9uFFzY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"description\": \"Transferencia para un amigo\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/transactions/699110f36ac72fdd4317b9e4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "transactions",
+                "699110f36ac72fdd4317b9e4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteTransaction - Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/transactions/699110f36ac72fdd4317b9e4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "transactions",
+                "699110f36ac72fdd4317b9e4"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
