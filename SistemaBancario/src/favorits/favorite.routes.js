@@ -6,18 +6,18 @@ import {
   getMyFavorites,
   deleteFavorite
 } from './favorite.controller.js';
-
-import { validateClient } from '../middlewares/validate.client.js';
+import { validateJWT } from '../middlewares/validate-jwt.js';
+import { validateClient } from '../middlewares/validate-client.js';
 
 const router = Router();
 
 // Agregar favorito
-router.post('/add', validateClient, addFavorite);
+router.post('/create', validateJWT, validateClient, addFavorite);
 
 // Ver mis favoritos
-router.get('/listar', validateClient, getMyFavorites);
+router.get('/listar', validateJWT, validateClient, getMyFavorites);
 
 // Eliminar favorito
-router.delete('/delete/:id', validateClient, deleteFavorite);
+router.delete('/delete/:id', validateJWT, validateClient, deleteFavorite);
 
 export default router;

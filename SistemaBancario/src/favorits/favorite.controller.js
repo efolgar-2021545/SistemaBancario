@@ -18,7 +18,7 @@ export const addFavorite = async (req, res) => {
     const favorite = await Favorite.create({
       alias,
       accountNumber,
-      ownerId: req.user
+      ownerId: req.user.id 
     });
 
     return res.status(201).json({
@@ -40,7 +40,7 @@ export const addFavorite = async (req, res) => {
 export const getMyFavorites = async (req, res) => {
   try {
     const favorites = await Favorite.find({
-      ownerId: req.user
+      ownerId: req.user.id
     });
 
     return res.json({
@@ -64,7 +64,7 @@ export const deleteFavorite = async (req, res) => {
 
     const favorite = await Favorite.findOne({
       _id: id,
-      ownerId: req.user
+      ownerId: req.user.id
     });
 
     if (!favorite) {

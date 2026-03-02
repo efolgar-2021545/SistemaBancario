@@ -5,7 +5,7 @@ import Product from './product.model.js';
 // CREAR PRODUCTO / SERVICIO (ADMIN)
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, type } = req.body;
+    const { name, description, type, price, status } = req.body;
 
     if (!name || !description || !type) {
       return res.status(400).json({
@@ -18,7 +18,9 @@ export const createProduct = async (req, res) => {
       name,
       description,
       type,
-      createdBy: req.user
+      price,
+      status,
+      createdBy: req.user.id  // solo el ID del usuario
     });
 
     return res.status(201).json({
@@ -28,7 +30,7 @@ export const createProduct = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error(error); // esto imprimirá la razón exacta
     return res.status(500).json({
       success: false,
       message: 'Error al crear producto'

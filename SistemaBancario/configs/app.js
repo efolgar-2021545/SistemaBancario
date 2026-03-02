@@ -12,7 +12,7 @@ import transactionRoutes from '../src/transactions/transaction.routes.js';
 import accountRoutes from '../src/accounts/account.routes.js';
 import depositRoutes from '../src/deposits/deposit.routes.js';
 import productRoutes from '../src/products/product.routes.js';
-import favoriteRoutes from '../src/favorites/favorite.routes.js';
+import favoriteRoutes from '../src/favorits/favorite.routes.js';
 
 export const initApp = () => {
   const app = express();

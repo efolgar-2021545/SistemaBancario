@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "9d3b69a5-d029-4a9c-a1da-c980cd2226bd",
+    "_postman_id": "a1eebb65-c31f-4e89-980b-0ad6718bc337",
     "name": "Apis KinalBank",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "48332460",
-    "_collection_link": "https://go.postman.co/collection/48332460-9d3b69a5-d029-4a9c-a1da-c980cd2226bd?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/48332460-a1eebb65-c31f-4e89-980b-0ad6718bc337?source=collection_link"
   },
   "item": [
     {
@@ -171,6 +171,48 @@
                 "v1",
                 "auth",
                 "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ActualizarUsuario-Admin o Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfSDJLVjJiQlpNREQyIiwianRpIjoiMDVkOWEwMTMtN2FhMy00NjNjLWEzYWMtMzZmNTg1ZDVkYWE3IiwiaWF0IjoxNzcyNDYzMjYzLCJyb2xlIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGJhbmsuY29tIiwiZXhwIjoxNzcyNDY1MDYzLCJhdWQiOiJBdXRoU2VydmljZSIsImlzcyI6IkF1dGhTZXJ2aWNlIn0.WlbWsRJU9ZjozOPsPmG-ODXUZ02Us-3qK5rhr2ZZMGo",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"Name\": \"Alan Flores\",\r\n  \"Username\": \"alancito\",\r\n  \"Email\": \"alan@gmail.com\",\r\n  \"Password\": \"12345678\",\r\n  \"DPI\": \"1212454578788\",\r\n  \"Address\": \"Zona 7\",\r\n  \"Phone\": \"22336655\",\r\n  \"Job\": \"Ingeniero\",\r\n  \"MonthlyIncome\": 1000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3005/api/v1/users/update/usr_QvX16vZpVaCt",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3005",
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "update",
+                "usr_QvX16vZpVaCt"
               ]
             }
           },
@@ -723,6 +765,290 @@
                 "v1",
                 "transactions",
                 "699110f36ac72fdd4317b9e4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear Producto-Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfSDJLVjJiQlpNREQyIiwianRpIjoiYTQ5NGViMDQtZjhkMy00OTUzLTlhMTYtZjM0MjA3NmJmMWJmIiwiaWF0IjoxNzcyNDY2OTg0LCJyb2xlIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGJhbmsuY29tIiwiZXhwIjoxNzcyNDY4Nzg0LCJhdWQiOiJBdXRoU2VydmljZSIsImlzcyI6IkF1dGhTZXJ2aWNlIn0.EarHy-NZbGb4qeSbUV-SQbNPo8yX2mGr2T5454vOc_I",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Cuenta Ahorro Premium\",\r\n  \"description\": \"Cuenta de ahorro con beneficios especiales y tarjeta de débito.\",\r\n  \"type\": \"PRODUCTO\",\r\n  \"status\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/products/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "products",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Producto -Cualquier persona",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfSDJLVjJiQlpNREQyIiwianRpIjoiYTQ5NGViMDQtZjhkMy00OTUzLTlhMTYtZjM0MjA3NmJmMWJmIiwiaWF0IjoxNzcyNDY2OTg0LCJyb2xlIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGJhbmsuY29tIiwiZXhwIjoxNzcyNDY4Nzg0LCJhdWQiOiJBdXRoU2VydmljZSIsImlzcyI6IkF1dGhTZXJ2aWNlIn0.EarHy-NZbGb4qeSbUV-SQbNPo8yX2mGr2T5454vOc_I",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/products/listar",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "products",
+                "listar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Producto- Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfSDJLVjJiQlpNREQyIiwianRpIjoiYTQ5NGViMDQtZjhkMy00OTUzLTlhMTYtZjM0MjA3NmJmMWJmIiwiaWF0IjoxNzcyNDY2OTg0LCJyb2xlIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGJhbmsuY29tIiwiZXhwIjoxNzcyNDY4Nzg0LCJhdWQiOiJBdXRoU2VydmljZSIsImlzcyI6IkF1dGhTZXJ2aWNlIn0.EarHy-NZbGb4qeSbUV-SQbNPo8yX2mGr2T5454vOc_I",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Cuenta Ahorro Premium Plus\",\r\n  \"description\": \"Cuenta mejorada con más beneficios\",\r\n  \"status\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/products/update/69a5b4d4a1521bce38e90aa4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "products",
+                "update",
+                "69a5b4d4a1521bce38e90aa4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Producto - Admin",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfSDJLVjJiQlpNREQyIiwianRpIjoiYTQ5NGViMDQtZjhkMy00OTUzLTlhMTYtZjM0MjA3NmJmMWJmIiwiaWF0IjoxNzcyNDY2OTg0LCJyb2xlIjoiQURNSU4iLCJlbWFpbCI6ImFkbWluQGJhbmsuY29tIiwiZXhwIjoxNzcyNDY4Nzg0LCJhdWQiOiJBdXRoU2VydmljZSIsImlzcyI6IkF1dGhTZXJ2aWNlIn0.EarHy-NZbGb4qeSbUV-SQbNPo8yX2mGr2T5454vOc_I",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/products/delete/69a5b4d4a1521bce38e90aa4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "products",
+                "delete",
+                "69a5b4d4a1521bce38e90aa4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agregar Favorito-Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{vault:authorization-secret}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"alias\": \"Pago Luz\",\r\n  \"accountNumber\": \"7212978043\",\r\n  \"ownerId\": \"usr_QvX16vZpVaCt\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/favorites/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "favorites",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Favorito -Cliente",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfUXZYMTZ2WnBWYUN0IiwianRpIjoiMDM0YjEzYzktOWM0Yy00NTk4LWFkMGUtNTgzOTgyMmFiNGM5IiwiaWF0IjoxNzcyNDY4NTQzLCJyb2xlIjoiQ0xJRU5UIiwiZW1haWwiOiJhbGFuQGdtYWlsLmNvbSIsImV4cCI6MTc3MjQ3MDM0MywiYXVkIjoiQXV0aFNlcnZpY2UiLCJpc3MiOiJBdXRoU2VydmljZSJ9.485veMdtk7ly2BnqZwdTzwjmu6LE7luAbjilR7rqeN0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/favorites/listar",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "favorites",
+                "listar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Favoritos-Cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c3JfUXZYMTZ2WnBWYUN0IiwianRpIjoiMDM0YjEzYzktOWM0Yy00NTk4LWFkMGUtNTgzOTgyMmFiNGM5IiwiaWF0IjoxNzcyNDY4NTQzLCJyb2xlIjoiQ0xJRU5UIiwiZW1haWwiOiJhbGFuQGdtYWlsLmNvbSIsImV4cCI6MTc3MjQ3MDM0MywiYXVkIjoiQXV0aFNlcnZpY2UiLCJpc3MiOiJBdXRoU2VydmljZSJ9.485veMdtk7ly2BnqZwdTzwjmu6LE7luAbjilR7rqeN0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3006/kinalBank/v1/favorites/delete/69a5b8d71cf0049c90c46b37",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3006",
+              "path": [
+                "kinalBank",
+                "v1",
+                "favorites",
+                "delete",
+                "69a5b8d71cf0049c90c46b37"
               ]
             }
           },
