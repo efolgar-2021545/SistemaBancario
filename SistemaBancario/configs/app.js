@@ -7,11 +7,12 @@ import morgan from 'morgan';
 
 const BASE_PATH = '/kinalBank/v1';
 
-//Se importaran todos los routes de las entidades
+// Importar todas las rutas de las entidades
 import transactionRoutes from '../src/transactions/transaction.routes.js';
 import accountRoutes from '../src/accounts/account.routes.js';
 import depositRoutes from '../src/deposits/deposit.routes.js';
-
+import productRoutes from '../src/products/product.routes.js';
+import favoriteRoutes from '../src/favorites/favorite.routes.js';
 
 export const initApp = () => {
   const app = express();
@@ -21,9 +22,12 @@ export const initApp = () => {
   app.use(helmet());
   app.use(morgan('dev'));
 
+  // Rutas principales
   app.use(`${BASE_PATH}/transactions`, transactionRoutes);
   app.use(`${BASE_PATH}/accounts`, accountRoutes);
   app.use(`${BASE_PATH}/deposits`, depositRoutes);
+  app.use(`${BASE_PATH}/products`, productRoutes);   // Productos y servicios (ADMIN)
+  app.use(`${BASE_PATH}/favorites`, favoriteRoutes); // Favoritos (CLIENT)
 
   // Endpoint de prueba
   app.get(`${BASE_PATH}/health`, (req, res) => {
