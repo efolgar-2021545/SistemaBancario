@@ -13,10 +13,12 @@ import accountRoutes from '../src/accounts/account.routes.js';
 import depositRoutes from '../src/deposits/deposit.routes.js';
 import productRoutes from '../src/products/product.routes.js';
 import favoriteRoutes from '../src/favorits/favorite.routes.js';
+import { swaggerDocs } from '../src/swagger/swagger.js';
 
 export const initApp = () => {
   const app = express();
-
+  // Swagger
+  swaggerDocs(app);
   app.use(express.json());
   app.use(cors());
   app.use(helmet());

@@ -6,6 +6,38 @@ import { validateAdmin } from "../middlewares/validate-admin.js";
 
 const router = new Router();
 
+
+/**
+ * @swagger
+ * /api/v1/transactions/create:
+ *   post:
+ *     summary: Crear transferencia o transacción
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 example: TRANSFERENCIA
+ *               amount:
+ *                 type: number
+ *                 example: 500
+ *               fromAccount:
+ *                 type: string
+ *               toAccount:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Transacción creada
+ */
 router.post(
     '/create',
     validateJWT,
@@ -13,7 +45,16 @@ router.post(
     createTransaction
 );
 
-//las transacciones solo las puede ver el admin
+
+/**
+ * @swagger
+ * /api/v1/transactions/listar:
+ *   get:
+ *     summary: Listar transacciones (ADMIN)
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ */
 router.get(
     '/listar',
     validateJWT,
@@ -21,6 +62,22 @@ router.get(
     getTransactions
 );
 
+
+/**
+ * @swagger
+ * /api/v1/transactions/{id}:
+ *   get:
+ *     summary: Obtener transacción por ID
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ */
 router.get(
     '/:id', 
     validateJWT, 
@@ -28,6 +85,22 @@ router.get(
     getTransactionById
 );
 
+
+/**
+ * @swagger
+ * /api/v1/transactions/{id}:
+ *   put:
+ *     summary: Actualizar descripción de transacción (5 min)
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ */
 router.put(
     '/:id', 
     validateJWT, 
@@ -35,6 +108,22 @@ router.put(
     updateTransaction
 );
 
+
+/**
+ * @swagger
+ * /api/v1/transactions/{id}:
+ *   delete:
+ *     summary: Eliminar transacción
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ */
 router.delete(
     '/:id', 
     validateJWT, 
