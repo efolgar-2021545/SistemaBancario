@@ -17,6 +17,7 @@ import {
 } from '../middlewares/server-genericError-handler.js';
 import authRoutes from '../src/auth/auth.routes.js';
 import userRoutes from '../src/users/user.routes.js';
+import { swaggerDocs } from '../src/swagger/swagger.js';
 
 const BASE_PATH = '/api/v1';
 
@@ -62,7 +63,10 @@ export const initServer = async () => {
 
     // Middlewares & routes
     middlewares(app);
+    // Swagger
+    swaggerDocs(app);
     routes(app);
+
     app.use(errorHandler);
 
     app.listen(PORT, () => {
