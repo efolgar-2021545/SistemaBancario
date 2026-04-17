@@ -5,7 +5,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-const BASE_PATH = '/kinalBank/v1';
+const BASE_PATH = '/api/v1'; // Cambia 'kinalBank' por 'api'
 
 // Importar todas las rutas de las entidades
 import transactionRoutes from '../src/transactions/transaction.routes.js';

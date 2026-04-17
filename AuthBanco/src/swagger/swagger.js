@@ -31,7 +31,6 @@ const options = {
     ]
   },
 
-  // ESTA PARTE TE FALTABA
   apis: [
     './src/auth/*.js',
     './src/users/*.js'

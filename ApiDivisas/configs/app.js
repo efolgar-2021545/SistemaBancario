@@ -11,6 +11,6 @@ app.use(express.json());
 swaggerDocs(app);
 
 // rutas
-app.use("/api/divisas", divisasRoutes);
+app.use("/api/v1/divisas", divisasRoutes);
 
 export default app;
